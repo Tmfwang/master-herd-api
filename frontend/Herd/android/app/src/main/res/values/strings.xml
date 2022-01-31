@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">Herd</string>
-    <string name="title_activity_main">Herd</string>
-    <string name="package_name">herd.app.tmfwang</string>
-    <string name="custom_url_scheme">herd.app.tmfwang</string>
-</resources>

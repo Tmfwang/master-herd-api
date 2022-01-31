@@ -1,7 +1,0 @@
-{
-  "name": "Herd",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "react"
-}
