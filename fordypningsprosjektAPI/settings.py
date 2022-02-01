@@ -26,7 +26,7 @@ SECRET_KEY = '=m&=unm$5sw8^#vhl@i)rw&9bn1&s@4iu41nn)omblo!w1!v25'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '192.168.1.17', 'https://master-herd-api.herokuapp.com/', 'http://master-herd-api.herokuapp.com/', 'master-herd-api.herokuapp.com', ]
+ALLOWED_HOSTS = ['127.0.0.1', '192.168.1.17', 'https://master-herd-api.herokuapp.com/']
 
 AUTH_USER_MODEL = 'authentication.User'
 
