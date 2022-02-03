@@ -83,12 +83,6 @@ def format_supervision(supervision):
 
 
 class GetSupervision(APIView):
-  
-  def options(self, request, id):
-    response = HttpResponse()
-    response['allow'] = ','.join(['get', 'options'])
-    return response
-
   # Fetches a single supervision with accompanying observations. The supervision must belong to the user that performs the request.
   def get(self, request, id, format=None):
     # if(not request.user.is_authenticated):
