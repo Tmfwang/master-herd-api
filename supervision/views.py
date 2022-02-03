@@ -127,7 +127,7 @@ class GetSupervisions(APIView):
       supervisions_response.append(format_supervision(supervision))
       
     # return HttpResponse(json.dumps(supervisions_response), status=status.HTTP_200_OK, content_type='application/json')
-    return Response(data=json.dumps(supervisions_response), status=status.HTTP_200_OK, content_type='application/json')
+    return Response(data=json.dumps(supervisions_response), status=status.HTTP_200_OK)
 
   # Creates a supervision database object (with accompanying observations), that is set to belong to the user that performs the request.
   def post (self, request, format=json):      
