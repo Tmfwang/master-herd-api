@@ -94,7 +94,6 @@ class GetSupervision(APIView):
     # if(not request.user.is_authenticated):
     #   return HttpResponse(status=status.HTTP_403_FORBIDDEN)
       # return Response(status=status.HTTP_403_FORBIDDEN)
-    return HttpResponse(status=status.HTTP_201_CREATED)
     try:
       supervision = Supervision.objects.filter(id=id)
 
