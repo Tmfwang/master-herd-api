@@ -100,8 +100,8 @@ class GetSupervision(APIView):
       return HttpResponse(status=status.HTTP_404_NOT_FOUND)
       # return Response(status=status.HTTP_404_NOT_FOUND)
 
-    if(supervision[0].performed_by != request.user):
-      return HttpResponse(status=status.HTTP_401_UNAUTHORIZED)
+    # if(supervision[0].performed_by != request.user):
+    #   return HttpResponse(status=status.HTTP_401_UNAUTHORIZED)
       # return Response(status=status.HTTP_401_UNAUTHORIZED)
 
       
