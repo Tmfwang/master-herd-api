@@ -28,9 +28,9 @@ router = routers.DefaultRouter()
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('', include(router.urls)),
-    path('user', authentication_views.ListUsers.as_view()
+    path('user/', authentication_views.ListUsers.as_view()
     , name="user"),
-    path('supervision', supervision_views.GetSupervisions.as_view()
+    path('supervision/', supervision_views.GetSupervisions.as_view()
     , name="getSupervisions"),
     path('supervision/<id>', supervision_views.GetSupervision.as_view()
     , name="getSupervision"),

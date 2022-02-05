@@ -29,8 +29,8 @@ class ListUsers(APIView):
      
       new_user = User.objects.create(email=request.data.get("email").lower(), password=request.data.get("password1"), full_name=request.data.get("full_name"), gaards_number=request.data.get("gaards_number"), bruks_number=request.data.get("bruks_number"), municipality=request.data.get("municipality"))
 
-      token = Token.objects.filter(user=new_user)
       if(new_user):
+        token = Token.objects.filter(user=new_user)
         return HttpResponse(json.dumps({token: token.key}), status=status.HTTP_201_CREATED)
         # return Response(status=status.HTTP_201_CREATED)
       
