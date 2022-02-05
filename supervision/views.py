@@ -128,8 +128,6 @@ class GetSupervisions(APIView):
   
     if(not request.user.is_authenticated):
       return HttpResponse(status=status.HTTP_403_FORBIDDEN)
-      # return Response(status=status.HTTP_403_FORBIDDEN)
-
 
     users_supervisions = Supervision.objects.filter(performed_by=request.user)
 
@@ -139,7 +137,6 @@ class GetSupervisions(APIView):
       supervisions_response.append(format_supervision(supervision))
       
     return HttpResponse(json.dumps(supervisions_response), status=status.HTTP_200_OK, content_type='application/json')
-    #return Response(data=json.dumps(supervisions_response), status=status.HTTP_200_OK, content_type='application/json')
 
   # Creates a supervision database object (with accompanying observations), that is set to belong to the user that performs the request.
   def post (self, request, format=json):      
@@ -203,4 +200,3 @@ class GetSupervisions(APIView):
       observation.save()
 
     return HttpResponse(status=status.HTTP_201_CREATED)
-    # return Response(status=status.HTTP_201_CREATED)

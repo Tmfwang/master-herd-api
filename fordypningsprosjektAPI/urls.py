@@ -32,7 +32,7 @@ urlpatterns = [
     , name="user"),
     path('supervision/', supervision_views.GetSupervisions.as_view()
     , name="getSupervisions"),
-    path('supervision/<id>', supervision_views.GetSupervision.as_view()
+    path('supervision/<id>/', supervision_views.GetSupervision.as_view()
     , name="getSupervision"),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api-token-auth/', token_auth_views.obtain_auth_token)
