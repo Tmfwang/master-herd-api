@@ -34,7 +34,7 @@ class ListUsers(APIView):
         validate_password(request.data.get("password1"))
       
       except Exception as e:
-        return HttpResponse('{"error": "Passordet må være relativt unikt, ikke bestå av kun tall, ikke bruke verdier som er tilknyttet brukeren din, og må ha en lengde på minst 8."}', status=status.HTTP_400_BAD_REQUEST)
+        return HttpResponse('{"error": "Passordet må være unikt nok, ikke bestå av kun tall, ikke bruke verdier som er tilknyttet brukeren din, og må ha en lengde på minst 8."}', status=status.HTTP_400_BAD_REQUEST)
         
 
       if(User.objects.filter(email=request.data.get("email").lower()).count() > 0):
