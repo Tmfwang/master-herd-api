@@ -29,7 +29,6 @@ class ListUsers(APIView):
         return HttpResponse('{"error": "Passordene stemmer ikke overens"}', status=status.HTTP_400_BAD_REQUEST)
         # return Response(data='{"error": "Passordene stemmer ikke overens"}', status=status.HTTP_400_BAD_REQUEST)
 
-
       if(User.objects.filter(email=request.data.get("email").lower().strip()).count() > 0):
         return HttpResponse('{"error": "Denne e-post-adressen har allerede blitt brukt"}', status=status.HTTP_400_BAD_REQUEST)
         
