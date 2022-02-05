@@ -8,6 +8,7 @@ from .models import User
 from rest_framework.authtoken.models import Token
 
 from .serializers import UserSerializer
+from django.contrib.auth.password_validation import validate_password
 
 class ListUsers(APIView):
 
@@ -28,6 +29,13 @@ class ListUsers(APIView):
         return HttpResponse('{"error": "Passordene stemmer ikke overens"}', status=status.HTTP_400_BAD_REQUEST)
         # return Response(data='{"error": "Passordene stemmer ikke overens"}', status=status.HTTP_400_BAD_REQUEST)
 
+
+      try:
+        validate_password(request.data.get("password1"))
+      
+      except Exception as e:
+        return HttpResponse('{"error": "Passordet må være relativt unikt, ikke bestå av kun tall, ikke bruke verdier som er tilknyttet brukeren din, og må ha en lengde på minst 8."}', status=status.HTTP_400_BAD_REQUEST)
+        
 
       if(User.objects.filter(email=request.data.get("email").lower()).count() > 0):
         return HttpResponse('{"error": "Denne e-post-adressen har allerede blitt brukt"}', status=status.HTTP_400_BAD_REQUEST)
