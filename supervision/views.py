@@ -85,27 +85,40 @@ def format_supervision(supervision):
 class GetSupervision(APIView):
   # Fetches a single supervision with accompanying observations. The supervision must belong to the user that performs the request.
   def get(self, request, id, format=None):
-    # if(not request.user.is_authenticated):
-    #   return HttpResponse(status=status.HTTP_403_FORBIDDEN)
-      # return Response(status=status.HTTP_403_FORBIDDEN)
+    if(not request.user.is_authenticated):
+      return HttpResponse(status=status.HTTP_403_FORBIDDEN)
     try:
       supervision = Supervision.objects.filter(id=id)
 
     except Exception as e:
       return HttpResponse(status=status.HTTP_404_NOT_FOUND)
-      # return Response(status=status.HTTP_404_NOT_FOUND)
 
     if(supervision.count() == 0):
       return HttpResponse(status=status.HTTP_404_NOT_FOUND)
-      # return Response(status=status.HTTP_404_NOT_FOUND)
 
-    # if(supervision[0].performed_by != request.user):
-    #   return HttpResponse(status=status.HTTP_401_UNAUTHORIZED)
-      # return Response(status=status.HTTP_401_UNAUTHORIZED)
-
+    if(supervision[0].performed_by != request.user):
+      return HttpResponse(status=status.HTTP_401_UNAUTHORIZED)
       
     return HttpResponse(json.dumps(format_supervision(supervision[0])), status=status.HTTP_200_OK)
-    # return Response(data=json.dumps(format_supervision(supervision[0])), status=status.HTTP_200_OK)
+
+  def delete(self, request, id, format=None):
+    if(not request.user.is_authenticated):
+      return HttpResponse(status=status.HTTP_403_FORBIDDEN)
+    try:
+      supervision = Supervision.objects.filter(id=id)
+
+    except Exception as e:
+      return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+
+    if(supervision.count() == 0):
+      return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+
+    if(supervision[0].performed_by != request.user):
+      return HttpResponse(status=status.HTTP_401_UNAUTHORIZED)
+      
+    supervision.delete()  
+    return HttpResponse(status=status.HTTP_200_OK)
+
 
 
 class GetSupervisions(APIView):

@@ -8,7 +8,7 @@ class Supervision(models.Model):
   performed_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
   full_path = models.TextField()
-  when_started = models.CharField(max_length=150)
+  when_started = models.CharField(max_length=150, unique=True)
   when_ended = models.CharField(max_length=150)
   
 
