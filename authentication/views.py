@@ -30,17 +30,18 @@ class ListUsers(APIView):
         # return Response(data='{"error": "Passordene stemmer ikke overens"}', status=status.HTTP_400_BAD_REQUEST)
 
 
+      if(User.objects.filter(email=request.data.get("email").lower().strip()).count() > 0):
+        return HttpResponse('{"error": "Denne e-post-adressen har allerede blitt brukt"}', status=status.HTTP_400_BAD_REQUEST)
+        
+      new_user = User(email=request.data.get("email").lower().strip(), password=request.data.get("password1"), full_name=request.data.get("full_name"), gaards_number=request.data.get("gaards_number"), bruks_number=request.data.get("bruks_number"), municipality=request.data.get("municipality"))
+      
       try:
-        validate_password(request.data.get("password1"))
+        validate_password(request.data.get("password1"), user=new_user)
       
       except Exception as e:
         return HttpResponse('{"error": "Passordet må være unikt nok, ikke bestå av kun tall, ikke bruke verdier som er tilknyttet brukeren din, og må ha en lengde på minst 8."}', status=status.HTTP_400_BAD_REQUEST)
-        
 
-      if(User.objects.filter(email=request.data.get("email").lower()).count() > 0):
-        return HttpResponse('{"error": "Denne e-post-adressen har allerede blitt brukt"}', status=status.HTTP_400_BAD_REQUEST)
-        
-      new_user = User.objects.create(email=request.data.get("email").lower(), password=request.data.get("password1"), full_name=request.data.get("full_name"), gaards_number=request.data.get("gaards_number"), bruks_number=request.data.get("bruks_number"), municipality=request.data.get("municipality"))
+      new_user.save()
 
       if(new_user):
         token = Token.objects.filter(user=new_user)[0]
