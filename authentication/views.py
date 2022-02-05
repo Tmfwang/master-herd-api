@@ -1,4 +1,3 @@
-from curses.ascii import HT
 import json
 from django.http import HttpResponse
 from rest_framework.views import APIView
@@ -24,16 +23,18 @@ class ListUsers(APIView):
 
 
     def post (self, request, format=json):
-      return HttpResponse(status=status.HTTP_208_ALREADY_REPORTED)
+      print(request.data)
+      
       if(request.data.get("password1") != request.data.get("password2") or not request.data.get("password1")):
-        return HttpResponse(data='{"error": "Passordene stemmer ikke overens"}', status=status.HTTP_400_BAD_REQUEST)
+        return HttpResponse('{"error": "Passordene stemmer ikke overens"}', status=status.HTTP_400_BAD_REQUEST)
         # return Response(data='{"error": "Passordene stemmer ikke overens"}', status=status.HTTP_400_BAD_REQUEST)
-     
+           
       new_user = User.objects.create(email=request.data.get("email").lower(), password=request.data.get("password1"), full_name=request.data.get("full_name"), gaards_number=request.data.get("gaards_number"), bruks_number=request.data.get("bruks_number"), municipality=request.data.get("municipality"))
 
       if(new_user):
-        token = Token.objects.filter(user=new_user)
-        return HttpResponse(json.dumps({token: token.key}), status=status.HTTP_201_CREATED)
+        token = Token.objects.filter(user=new_user)[0]
+
+        return HttpResponse(json.dumps({"token": str(token.key)}), status=status.HTTP_201_CREATED)
         # return Response(status=status.HTTP_201_CREATED)
       
       else:
