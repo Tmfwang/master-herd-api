@@ -1,3 +1,4 @@
+from curses.ascii import HT
 import json
 from django.http import HttpResponse
 from rest_framework.views import APIView
@@ -23,6 +24,7 @@ class ListUsers(APIView):
 
 
     def post (self, request, format=json):
+      return HttpResponse(status=status.HTTP_208_ALREADY_REPORTED)
       if(request.data.get("password1") != request.data.get("password2") or not request.data.get("password1")):
         return HttpResponse(data='{"error": "Passordene stemmer ikke overens"}', status=status.HTTP_400_BAD_REQUEST)
         # return Response(data='{"error": "Passordene stemmer ikke overens"}', status=status.HTTP_400_BAD_REQUEST)
