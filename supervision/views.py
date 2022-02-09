@@ -102,8 +102,22 @@ class GetSupervision(APIView):
     return HttpResponse(json.dumps(format_supervision(supervision[0])), status=status.HTTP_200_OK)
 
   def delete(self, request, id, format=None):
+    
+    # The authentication token is usually a part of the cookies (as a HttpOnly cookie). 
+    # This sets the request.user to the correct user if that is the case.
     if(not request.user.is_authenticated):
-      return HttpResponse(status=status.HTTP_403_FORBIDDEN)
+      token = Token.objects.filter(key=request.COOKIES.get("AuthorizationToken"))
+      
+      if(token.count() == 0):
+        return HttpResponse(json.dumps({"error": "Ikke logget inn"}), status=status.HTTP_401_UNAUTHORIZED)
+
+      token_user = User.objects.filter(auth_token=token[0])
+    
+      if(not token_user.count() > 0):
+        return HttpResponse(json.dumps({"error": "Ikke logget inn"}), status=status.HTTP_401_UNAUTHORIZED)
+      else:
+        request.user = token_user[0]
+
     try:
       supervision = Supervision.objects.filter(id=id)
 
@@ -125,9 +139,21 @@ class GetSupervisions(APIView):
 
   # Fetches all supervisions (with accompanying observations) that belongs to the user that performs the request.
   def get(self, request, format=None):
-  
+
+    # The authentication token is usually a part of the cookies (as a HttpOnly cookie). 
+    # This sets the request.user to the correct user if that is the case.
     if(not request.user.is_authenticated):
-      return HttpResponse(status=status.HTTP_403_FORBIDDEN)
+      token = Token.objects.filter(key=request.COOKIES.get("AuthorizationToken"))
+      
+      if(token.count() == 0):
+        return HttpResponse(json.dumps({"error": "Ikke logget inn"}), status=status.HTTP_401_UNAUTHORIZED)
+
+      token_user = User.objects.filter(auth_token=token[0])
+    
+      if(not token_user.count() > 0):
+        return HttpResponse(json.dumps({"error": "Ikke logget inn"}), status=status.HTTP_401_UNAUTHORIZED)
+      else:
+        request.user = token_user[0]
 
     users_supervisions = Supervision.objects.filter(performed_by=request.user)
 
@@ -139,9 +165,22 @@ class GetSupervisions(APIView):
     return HttpResponse(json.dumps(supervisions_response), status=status.HTTP_200_OK, content_type='application/json')
 
   # Creates a supervision database object (with accompanying observations), that is set to belong to the user that performs the request.
-  def post (self, request, format=json):      
+  def post (self, request, format=json):
+   
+    # The authentication token is usually a part of the cookies (as a HttpOnly cookie). 
+    # This sets the request.user to the correct user if that is the case.
     if(not request.user.is_authenticated):
-      return Response(status=status.HTTP_401_UNAUTHORIZED)
+      token = Token.objects.filter(key=request.COOKIES.get("AuthorizationToken"))
+      
+      if(token.count() == 0):
+        return HttpResponse(json.dumps({"error": "Ikke logget inn"}), status=status.HTTP_401_UNAUTHORIZED)
+
+      token_user = User.objects.filter(auth_token=token[0])
+    
+      if(not token_user.count() > 0):
+        return HttpResponse(json.dumps({"error": "Ikke logget inn"}), status=status.HTTP_401_UNAUTHORIZED)
+      else:
+        request.user = token_user[0]
 
     existing_supervision = Supervision.objects.filter(when_started=request.data.get("whenStarted")).count()
 
