@@ -10,7 +10,13 @@ from rest_framework.authtoken.models import Token
 from .serializers import UserSerializer
 from django.contrib.auth.password_validation import validate_password
 
-class ListUsers(APIView):
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+
+from django.contrib.auth import authenticate, login
+from django.http import JsonResponse
+
+class CreateUser(APIView):
 
     # def get(self, request, format=None):
     #   """
@@ -23,8 +29,7 @@ class ListUsers(APIView):
       # return Response(serializer.data)
 
 
-    def post (self, request, format=json):
-      
+    def post(self, request, format=json):
       if(request.data.get("password1") != request.data.get("password2") or not request.data.get("password1")):
         return HttpResponse('{"error": "Passordene stemmer ikke overens"}', status=status.HTTP_400_BAD_REQUEST)
         # return Response(data='{"error": "Passordene stemmer ikke overens"}', status=status.HTTP_400_BAD_REQUEST)
@@ -52,3 +57,52 @@ class ListUsers(APIView):
         return HttpResponse('{"error": "Noe gikk galt. Brukeren ble ikke opprettet."}', status=status.HTTP_400_BAD_REQUEST)
         #return Response(data='{"error": "Noe gikk galt. Brukeren ble ikke opprettet."}', status=status.HTTP_400_BAD_REQUEST)
      
+
+
+# This is the view for logging in using session authentication, meant for use by the website. The mobile app uses token authentication.
+
+class LoginHttpOnlyToken(APIView):
+    def post(self, request, format=json):
+
+      if(request.user.is_authenticated):
+        return HttpResponse(json.dumps({"message": "Du er allerede logget inn"}), status=status.HTTP_200_OK)
+      
+      username = request.data.get('username')
+      password = request.data.get('password')
+      if username is None:
+          return HttpResponse(json.dumps({"error": "Vennligst oppgi et brukernavn"}), status=status.HTTP_400_BAD_REQUEST)
+      elif password is None:
+          return HttpResponse(json.dumps({"error": "Vennligst oppgi et passord"}), status=status.HTTP_400_BAD_REQUEST)
+
+      user = authenticate(username=username, password=password)
+      if user is not None:
+          token = Token.objects.filter(user=user)
+
+          if(token.count() > 0):
+            response = HttpResponse(json.dumps({"message": "Du har blitt logget inn"}), status=status.HTTP_200_OK)
+            
+            response.set_cookie(key='AuthorizationToken', value=str(token[0].key), httponly=True)
+
+            return response
+      return HttpResponse(json.dumps({"error": "Passordet eller brukernavnet er ugyldig"}), status=status.HTTP_400_BAD_REQUEST)
+
+
+class VerifyLogin(APIView):
+    def get(self, request, format=json):
+
+      if(request.user.is_authenticated):
+        return HttpResponse(json.dumps({"isLoggedIn": True}), status=status.HTTP_200_OK)
+
+      else:
+        token = Token.objects.filter(key=request.COOKIES.get("AuthorizationToken"))
+        
+        if(token.count() == 0):
+          return HttpResponse(json.dumps({"isLoggedIn": False}), status=status.HTTP_200_OK)
+
+        token_user = User.objects.filter(auth_token=token[0])
+      
+        if(not token_user.count() > 0):
+          return HttpResponse(json.dumps({"isLoggedIn": False}), status=status.HTTP_200_OK)
+        else:
+          return HttpResponse(json.dumps({"isLoggedIn": True}), status=status.HTTP_200_OK)
+
