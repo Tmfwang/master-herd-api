@@ -134,7 +134,6 @@ class GetSupervision(APIView):
     return HttpResponse(status=status.HTTP_200_OK)
 
 
-
 class GetSupervisions(APIView):
 
   # Fetches all supervisions (with accompanying observations) that belongs to the user that performs the request.
