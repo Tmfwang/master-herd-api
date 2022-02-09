@@ -34,8 +34,8 @@ urlpatterns = [
     , name="getSupervisions"),
     path('supervision/<id>/', supervision_views.GetSupervision.as_view()
     , name="getSupervision"),
-    path('api-token-auth/', token_auth_views.obtain_auth_token)
-    path('api-http-token-auth/', authentication_views.LoginHttpOnlyToken.as_view()),
+    path('api-token-auth/', token_auth_views.obtain_auth_token),
+    path('api-token-cookie-auth/', authentication_views.LoginHttpOnlyToken.as_view()),
     path('verify-login/', authentication_views.VerifyLogin.as_view())
 
 ]
