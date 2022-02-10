@@ -12,5 +12,11 @@ CORS_ALLOWED_ORIGINS = [
     "localhost:3000"
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+  "http://localhost:3000/",
+  "localhost:3000/",
+  "localhost:3000"
+]
+
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = True
