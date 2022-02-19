@@ -37,5 +37,4 @@ urlpatterns = [
     path('api-token-auth/', token_auth_views.obtain_auth_token),
     path('api-token-cookie-auth/', authentication_views.LoginHttpOnlyToken.as_view()),
     path('verify-login/', authentication_views.VerifyLogin.as_view())
-
 ]
