@@ -50,7 +50,6 @@ class UserManager(BaseUserManager):
         if not password:
             raise ValueError('Users must have a password')
 
-
         user = self.model(
             email=self.normalize_email(email),
             full_name=full_name,
@@ -68,13 +67,15 @@ class UserManager(BaseUserManager):
 # User profile models
 class User(AbstractBaseUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    username = models.CharField(max_length=300, unique=True)
+
     email = models.EmailField(
         verbose_name='email address',
-        max_length=255,
-        unique=True
+        max_length=150,
+        unique=False
     )
     full_name = models.CharField(max_length=150)
-    gaards_number = models.CharField(max_length=150, null=True, blank=True) 
+    gaards_number = models.CharField(max_length=150, null=False, blank=False) 
     bruks_number = models.CharField(max_length=150, null=True, blank=True)
     municipality = models.CharField(max_length=150, null=True, blank=True)
 
@@ -82,8 +83,13 @@ class User(AbstractBaseUser):
    
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['full_name']
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['full_name', 'gaards_number']
+
+    class Meta:
+        unique_together = (
+            ('email', 'gaards_number')
+        )
 
     def __str__(self):
         return self.full_name
@@ -91,6 +97,10 @@ class User(AbstractBaseUser):
     @property
     def is_superuser(self):
         return self.is_admin
+
+    def save(self, *args, **kwargs):
+        self.username = self.email + self.gaards_number
+        super(User, self).save(*args, **kwargs)    
 
 
    
