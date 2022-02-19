@@ -1,4 +1,5 @@
 import json
+from posixpath import split
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -28,24 +29,29 @@ class CreateUser(APIView):
     #   return HttpResponse(serializer.data)
       # return Response(serializer.data)
 
-
     def post(self, request, format=json):
       if(request.data.get("password1") != request.data.get("password2") or not request.data.get("password1")):
         return HttpResponse('{"error": "Passordene stemmer ikke overens"}', status=status.HTTP_400_BAD_REQUEST)
-        # return Response(data='{"error": "Passordene stemmer ikke overens"}', status=status.HTTP_400_BAD_REQUEST)
-
-      if(User.objects.filter(email=request.data.get("email").lower().strip()).count() > 0):
-        return HttpResponse('{"error": "Denne e-post-adressen har allerede blitt brukt"}', status=status.HTTP_400_BAD_REQUEST)
-        
-      new_user = User(email=request.data.get("email").lower().strip(), password=request.data.get("password1"), full_name=request.data.get("full_name"), gaards_number=request.data.get("gaards_number"), bruks_number=request.data.get("bruks_number"), municipality=request.data.get("municipality"))
       
+      if(not request.data.get("full_name") or len(request.data.get("full_name").split(" ")) < 2):
+        return HttpResponse('{"error": "Du mangler fullt navn"}', status=status.HTTP_400_BAD_REQUEST)
+      
+      if(not request.data.get("gaards_number") or len(request.data.get("gaards_number")) <= 3):
+        return HttpResponse('{"error": "Du mangler gårdsnummer"}', status=status.HTTP_400_BAD_REQUEST)
+
+      new_user = User(email=request.data.get("email").lower().strip(), full_name=request.data.get("full_name"), gaards_number=request.data.get("gaards_number"), bruks_number=request.data.get("bruks_number"), municipality=request.data.get("municipality"))
+  
       try:
         validate_password(request.data.get("password1"), user=new_user)
+        new_user.set_password(request.data.get("password1"))
       
-      except Exception as e:
+      except Exception:
         return HttpResponse('{"error": "Passordet må være unikt nok, ikke bestå av kun tall, ikke bruke verdier som er tilknyttet brukeren din, og må ha en lengde på minst 8."}', status=status.HTTP_400_BAD_REQUEST)
-
-      new_user.save()
+  
+      try:
+        new_user.save()
+      except Exception:
+        return HttpResponse('{"error": "Noe gikk galt. Det er mulig at denne brukeren allerede eksisterer."}', status=status.HTTP_400_BAD_REQUEST)
 
       if(new_user):
         token = Token.objects.filter(user=new_user)[0]
