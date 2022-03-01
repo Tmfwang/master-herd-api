@@ -49,7 +49,6 @@ class CreateUser(APIView):
         return HttpResponse('{"error": "Passordet må være unikt nok, ikke bestå av kun tall, ikke bruke verdier som er tilknyttet brukeren din, og må ha en lengde på minst 8."}', status=status.HTTP_400_BAD_REQUEST)
   
       try:
-        print("YO")
         new_user.save()
       except Exception:
         return HttpResponse('{"error": "Noe gikk galt. Det er mulig at denne brukeren allerede eksisterer."}', status=status.HTTP_400_BAD_REQUEST)
