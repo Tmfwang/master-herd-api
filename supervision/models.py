@@ -8,8 +8,8 @@ class Supervision(models.Model):
   performed_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
   full_path = models.TextField()
-  when_started = models.CharField(max_length=150, unique=True)
-  when_ended = models.CharField(max_length=150)
+  when_started = models.DateTimeField(unique=True)
+  when_ended = models.DateTimeField()
   
 
 class Observation(models.Model):
@@ -20,7 +20,7 @@ class Observation(models.Model):
   observation_latitude = models.FloatField()
   user_longitude = models.FloatField()
   user_latitude = models.FloatField()
-  when_registered = models.CharField(max_length=150)
+  when_registered = models.DateTimeField()
   
   type_observasjon =  models.CharField(max_length=150)
 

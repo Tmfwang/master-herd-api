@@ -10,6 +10,7 @@ from .models import User
 from rest_framework.authtoken.models import Token
 from .models import Supervision, Observation
 
+from dateutil import parser
 
 def format_supervision(supervision):
   all_observations = []
@@ -19,7 +20,7 @@ def format_supervision(supervision):
 
     observation_dict["observationLocation"] = {"latitude": o.observation_latitude, "longitude": o.observation_longitude}
     observation_dict["userLocation"] = {"latitude": o.user_latitude, "longitude": o.user_longitude}
-    observation_dict["whenRegisteredDateTime"] = o.when_registered
+    observation_dict["whenRegisteredDateTime"] = o.when_registered.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
 
     observation_dict["observationDetails"] = {
       "alle": {
@@ -76,8 +77,8 @@ def format_supervision(supervision):
   supervision_dict["id"] = str(supervision.id)
   supervision_dict["allObservations"] = all_observations
   supervision_dict["fullPath"] = json.loads(supervision.full_path)
-  supervision_dict["whenStarted"] = supervision.when_started
-  supervision_dict["whenEnded"] = supervision.when_ended
+  supervision_dict["whenStarted"] = supervision.when_started.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+  supervision_dict["whenEnded"] = supervision.when_ended.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
 
   return supervision_dict
 
@@ -192,7 +193,7 @@ class GetSupervisions(APIView):
     if(existing_supervision > 0):
       return Response(status=status.HTTP_200_OK)
 
-    new_supervision = Supervision(full_path=json.dumps(request.data.get("fullPath")), when_started=request.data.get("whenStarted"), when_ended=request.data.get("whenEnded"), performed_by=request.user)
+    new_supervision = Supervision(full_path=json.dumps(request.data.get("fullPath")), when_started=parser.parse(request.data.get("whenStarted")), when_ended=parser.parse(request.data.get("whenEnded")), performed_by=request.user)
 
     new_observations = []
 
@@ -204,7 +205,7 @@ class GetSupervisions(APIView):
           observation_latitude=observation.get("observationLocation").get("latitude"),
           user_longitude=observation.get("userLocation").get("longitude"),
           user_latitude=observation.get("userLocation").get("latitude"),
-          when_registered=observation.get("whenRegisteredDateTime"),
+          when_registered=parser.parse(observation.get("whenRegisteredDateTime")),
           type_observasjon=observation.get("observationDetails").get("alle").get("typeObservasjon"), 
           
           # Gruppe sau
