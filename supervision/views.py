@@ -139,11 +139,6 @@ class GetSupervisions(APIView):
 
   # Fetches all supervisions (with accompanying observations) that belongs to the user that performs the request.
   def get(self, request, format=None):
-    print(request.GET.get("filterStartDate"))
-
-    # sv = Supervision.objects.filter(whenStarted__lte=request.GET.get("filterStartDate"))
-
-    # print(sv.count())
 
     # The authentication token is usually a part of the cookies (as a HttpOnly cookie). 
     # This sets the request.user to the correct user if that is the case.
@@ -162,6 +157,14 @@ class GetSupervisions(APIView):
 
 
     users_supervisions = Supervision.objects.filter(performed_by=request.user)
+
+    if(request.GET.get("filterDateStart")):
+      users_supervisions = users_supervisions.filter(when_started__gte=datetime.strptime(request.GET.get("filterStartDate"), "%Y-%m-%d"))
+
+    if(request.GET.get("filterDateEnd")):
+      users_supervisions = users_supervisions.filter(when_started__lte=datetime.strptime(request.GET.get("filterDateEnd"), "%Y-%m-%d"))
+
+    
 
     supervisions_response = []
 
