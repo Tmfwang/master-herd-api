@@ -140,9 +140,9 @@ class GetSupervisions(APIView):
   def get(self, request, format=None):
     print(request.GET.get("filterStartDate"))
 
-    sv = Supervision.objects.filter(whenStarted__lte=request.GET.get("filterStartDate"))
+    # sv = Supervision.objects.filter(whenStarted__lte=request.GET.get("filterStartDate"))
 
-    print(sv.count())
+    # print(sv.count())
 
     # The authentication token is usually a part of the cookies (as a HttpOnly cookie). 
     # This sets the request.user to the correct user if that is the case.
