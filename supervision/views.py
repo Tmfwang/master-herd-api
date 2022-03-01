@@ -20,7 +20,7 @@ def format_supervision(supervision):
 
     observation_dict["observationLocation"] = {"latitude": o.observation_latitude, "longitude": o.observation_longitude}
     observation_dict["userLocation"] = {"latitude": o.user_latitude, "longitude": o.user_longitude}
-    observation_dict["whenRegisteredDateTime"] = o.when_registered.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+    observation_dict["whenRegisteredDateTime"] = o.when_registered.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 
     observation_dict["observationDetails"] = {
       "alle": {
@@ -77,8 +77,8 @@ def format_supervision(supervision):
   supervision_dict["id"] = str(supervision.id)
   supervision_dict["allObservations"] = all_observations
   supervision_dict["fullPath"] = json.loads(supervision.full_path)
-  supervision_dict["whenStarted"] = supervision.when_started.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-  supervision_dict["whenEnded"] = supervision.when_ended.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+  supervision_dict["whenStarted"] = supervision.when_started.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
+  supervision_dict["whenEnded"] = supervision.when_ended.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 
   return supervision_dict
 
