@@ -10,7 +10,7 @@ from .models import User
 from rest_framework.authtoken.models import Token
 from .models import Supervision, Observation
 
-from dateutil import parser
+from datetime import datetime
 
 def format_supervision(supervision):
   all_observations = []
@@ -193,7 +193,7 @@ class GetSupervisions(APIView):
     if(existing_supervision > 0):
       return Response(status=status.HTTP_200_OK)
 
-    new_supervision = Supervision(full_path=json.dumps(request.data.get("fullPath")), when_started=parser.parse(request.data.get("whenStarted")), when_ended=parser.parse(request.data.get("whenEnded")), performed_by=request.user)
+    new_supervision = Supervision(full_path=json.dumps(request.data.get("fullPath")), when_started=datetime.strptime(request.data.get("whenStarted"), "%Y-%m-%dT%H:%M:%S.%fZ"), when_ended=datetime.strptime(request.data.get("whenEnded"), "%Y-%m-%dT%H:%M:%S.%fZ"), performed_by=request.user)
 
     new_observations = []
 
@@ -205,7 +205,7 @@ class GetSupervisions(APIView):
           observation_latitude=observation.get("observationLocation").get("latitude"),
           user_longitude=observation.get("userLocation").get("longitude"),
           user_latitude=observation.get("userLocation").get("latitude"),
-          when_registered=parser.parse(observation.get("whenRegisteredDateTime")),
+          when_registered=datetime.strptime(observation.get("whenRegisteredDateTime"), "%Y-%m-%dT%H:%M:%S.%fZ"),
           type_observasjon=observation.get("observationDetails").get("alle").get("typeObservasjon"), 
           
           # Gruppe sau
