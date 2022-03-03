@@ -173,10 +173,10 @@ class GetSupervisions(APIView):
       users_supervisions = users_supervisions.order_by("when_started")
           
     elif(request.GET.get("sortBy") == "observasjoner"):
-      users_supervisions = users_supervisions.annotate(num_observations=Count('observation')).order_by('num_observations')
+      users_supervisions = users_supervisions.annotate(num_observations=Count('observation')).order_by('-num_observations')
       
     elif(request.GET.get("sortBy") == "varighet"):
-      users_supervisions = users_supervisions.extra(select={'offset': 'when_ended - when_started'}).order_by('offset')
+      users_supervisions = users_supervisions.extra(select={'offset': 'when_ended - when_started'}).order_by('-offset')
       
     if(request.GET.get("isDescendingSort") == "true"):
         users_supervisions = users_supervisions.reverse()  
