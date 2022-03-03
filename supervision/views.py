@@ -170,7 +170,7 @@ class GetSupervisions(APIView):
 
     # Sorting
     if(request.GET.get("sortBy") == "tilsynsdato"):
-      users_supervisions = users_supervisions.order_by("-when_started")
+      users_supervisions = users_supervisions.order_by("when_started")
           
     elif(request.GET.get("sortBy") == "observasjoner"):
       users_supervisions = users_supervisions.annotate(num_observations=Count('observation')).order_by('num_observations')
