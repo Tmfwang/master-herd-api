@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.renderers import JSONRenderer
 
 from django.http import HttpResponse
+from django.db.models import Count
 
 from .models import User
 from rest_framework.authtoken.models import Token
@@ -158,11 +159,26 @@ class GetSupervisions(APIView):
 
     users_supervisions = Supervision.objects.filter(performed_by=request.user)
 
+    # Filtering
     if(request.GET.get("filterDateStart")):
       users_supervisions = users_supervisions.filter(when_started__gte=datetime.strptime(request.GET.get("filterDateStart"), "%Y-%m-%d"))
 
     if(request.GET.get("filterDateEnd")):
       users_supervisions = users_supervisions.filter(when_started__lte=datetime.strptime(request.GET.get("filterDateEnd"), "%Y-%m-%d"))
+
+    # Sorting
+    if(request.GET.get("sortBy") == "tilsynsdato"):
+      users_supervisions = users_supervisions.order_by("when_started")
+          
+    elif(request.GET.get("sortBy") == "observasjoner"):
+      users_supervisions = users_supervisions.annotate(num_observations=Count('observation')).order_by('num_observations')
+      
+    elif(request.GET.get("sortBy") == "varighet"):
+      users_supervisions = users_supervisions.extra(select={'offset': 'when_ended - when_started'}).order_by('offset')
+      
+    if(request.GET.get("isDescendingSort") == "true"):
+        users_supervisions = users_supervisions.reverse()  
+      
 
     supervisions_response = []
 
