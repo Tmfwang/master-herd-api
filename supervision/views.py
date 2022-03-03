@@ -12,6 +12,8 @@ from rest_framework.authtoken.models import Token
 from .models import Supervision, Observation
 
 from datetime import datetime
+from datetime import timedelta
+
 
 def format_supervision(supervision):
   all_observations = []
@@ -164,7 +166,7 @@ class GetSupervisions(APIView):
       users_supervisions = users_supervisions.filter(when_started__gte=datetime.strptime(request.GET.get("filterDateStart"), "%Y-%m-%d"))
 
     if(request.GET.get("filterDateEnd")):
-      users_supervisions = users_supervisions.filter(when_started__lte=datetime.strptime(request.GET.get("filterDateEnd"), "%Y-%m-%d"))
+      users_supervisions = users_supervisions.filter(when_started__lte=(datetime.strptime(request.GET.get("filterDateEnd"), "%Y-%m-%d") + timedelta(days=1)))
 
     # Sorting
     if(request.GET.get("sortBy") == "tilsynsdato"):
