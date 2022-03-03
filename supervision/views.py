@@ -158,13 +158,13 @@ class GetSupervisions(APIView):
 
     users_supervisions = Supervision.objects.filter(performed_by=request.user)
 
-    if(request.GET.get("filterDateStart")):
-      users_supervisions = users_supervisions.filter(when_started__gte=datetime.strptime(request.GET.get("filterStartDate"), "%Y-%m-%d"))
+    # if(request.GET.get("filterDateStart")):
+    #   users_supervisions = users_supervisions.filter(when_started__gte=datetime.strptime(request.GET.get("filterDateStart"), "%Y-%m-%d"))
 
-    if(request.GET.get("filterDateEnd")):
-      users_supervisions = users_supervisions.filter(when_started__lte=datetime.strptime(request.GET.get("filterDateEnd"), "%Y-%m-%d"))
+    # if(request.GET.get("filterDateEnd")):
+    #   users_supervisions = users_supervisions.filter(when_started__lte=datetime.strptime(request.GET.get("filterDateEnd"), "%Y-%m-%d"))
 
-    
+
 
     supervisions_response = []
 
