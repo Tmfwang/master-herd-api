@@ -19,15 +19,25 @@ from django.http import JsonResponse
 
 class CreateUser(APIView):
 
-    # def get(self, request, format=None):
-    #   """
-    #   Return a list of all users.
-    #   """
+    def get(self, request, format=None):
+      # The authentication token is usually a part of the cookies (as a HttpOnly cookie). 
+      # This sets the request.user to the correct user if that is the case.
+      if(not request.user.is_authenticated):
+        token = Token.objects.filter(key=request.COOKIES.get("AuthorizationToken"))
+        
+        if(token.count() == 0):
+          return HttpResponse(json.dumps({"error": "Ikke logget inn"}), status=status.HTTP_401_UNAUTHORIZED)
 
-    #   serializer = UserSerializer(User.objects.all(), many=True)
+        token_user = User.objects.filter(auth_token=token[0])
       
-    #   return HttpResponse(serializer.data)
-      # return Response(serializer.data)
+        if(not token_user.count() > 0):
+          return HttpResponse(json.dumps({"error": "Ikke logget inn"}), status=status.HTTP_401_UNAUTHORIZED)
+        else:
+          request.user = token_user[0]
+
+      serializer = UserSerializer(request.user, many=False)
+      
+      return Response(serializer.data)
 
     def post(self, request, format=json):
       if(request.data.get("password1") != request.data.get("password2") or not request.data.get("password1")):
