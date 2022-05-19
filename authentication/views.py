@@ -40,6 +40,9 @@ class CreateUser(APIView):
       return Response(serializer.data)
 
     def post(self, request, format=json):
+      if(not request.data.get("email") or len(request.data.get("email")) < 5):
+        return HttpResponse('{"error": "Du mangler e-post-adresse"}', status=status.HTTP_400_BAD_REQUEST)  
+
       if(request.data.get("password1") != request.data.get("password2") or not request.data.get("password1")):
         return HttpResponse('{"error": "Passordene stemmer ikke overens"}', status=status.HTTP_400_BAD_REQUEST)
       
@@ -47,7 +50,10 @@ class CreateUser(APIView):
         return HttpResponse('{"error": "Du mangler fullt navn"}', status=status.HTTP_400_BAD_REQUEST)
       
       if(not request.data.get("gaards_number") or len(request.data.get("gaards_number")) <= 3):
-        return HttpResponse('{"error": "Du mangler gårdsnummer"}', status=status.HTTP_400_BAD_REQUEST)
+        return HttpResponse('{"error": "Du mangler gyldig gårdsnummer"}', status=status.HTTP_400_BAD_REQUEST)
+
+      if(not request.data.get("municipality") or len(request.data.get("municipality")) < 2):
+        return HttpResponse('{"error": "Du mangler kommune"}', status=status.HTTP_400_BAD_REQUEST)  
 
       new_user = User(email=request.data.get("email").lower().strip(), full_name=request.data.get("full_name"), gaards_number=request.data.get("gaards_number"), bruks_number=request.data.get("bruks_number"), municipality=request.data.get("municipality"))
   
